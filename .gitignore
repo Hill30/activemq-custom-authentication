@@ -1,0 +1,6 @@
+plugin/.idea/workspace.xml
+plugin/target
+ruby-auth-service/log/*
+ruby-auth-service/tmp/*
+
+
