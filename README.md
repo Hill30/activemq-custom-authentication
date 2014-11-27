@@ -41,14 +41,16 @@ Write it by yourself. It should just answer for requests like
 Add to tag broker tag plugins with content below
 
 
-    <plugins>
-        <bean id="authenticationPlugin" xmlns="http://www.springframework.org/schema/beans"
-                class="com.hill30.activemq.auth.RestAuthenticationPlugin">
-            <property name="authServiceUrl">
-                <value>http://localhost:3000/auth/auth/</value>
-            </property>
-        </bean>
-    </plugins>
+```xml
+<plugins>
+    <bean id="authenticationPlugin" xmlns="http://www.springframework.org/schema/beans"
+            class="com.hill30.activemq.auth.RestAuthenticationPlugin">
+        <property name="authServiceUrl">
+            <value>http://localhost:3000/auth/auth/</value>
+        </property>
+    </bean>
+</plugins>
+```
 
 * Edit url for service appropriate to your service
 
