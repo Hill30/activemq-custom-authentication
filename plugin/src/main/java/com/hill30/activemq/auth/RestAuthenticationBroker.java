@@ -7,11 +7,11 @@ import org.apache.activemq.command.ConnectionInfo;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 import java.util.ArrayList;
@@ -37,8 +37,12 @@ public class RestAuthenticationBroker extends BrokerFilter {
         List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
         nameValuePairs.add(new BasicNameValuePair("username", userName));
         nameValuePairs.add(new BasicNameValuePair("password", password));
-        String queryString = URLEncodedUtils.format(nameValuePairs, "utf-8");
-        HttpRequestBase httpRequest = new HttpGet(authServiceUrl + "/?" + queryString);
+
+
+        HttpPost httpRequest = new HttpPost(authServiceUrl);
+        httpRequest.setHeader("userName", userName);
+        UrlEncodedFormEntity entity = new UrlEncodedFormEntity(nameValuePairs, HTTP.UTF_8);
+        httpRequest.setEntity(entity);
 
         HttpResponse response = httpClient.execute(httpRequest);
 
