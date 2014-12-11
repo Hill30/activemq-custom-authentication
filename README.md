@@ -24,9 +24,8 @@ There are only pairs admin/admin and userName/password are valid.
 
 ### 2.2 If you want to use C# test service
 
-Write it by yourself. It should just answer for requests like
-
-    http://localhost:3000/auth/auth?username=admin&password=admin
+* open csharp-auth-service, run service with Visual Studio
+* open TestLoginForm.html in csharp-auth-service/AuthActiveMQService and send form, result should contains "Login OK"
 
 
 ## 3. Install ActiveMQ
@@ -46,11 +45,19 @@ Add to tag broker tag plugins with content below
     <bean id="authenticationPlugin" xmlns="http://www.springframework.org/schema/beans"
             class="com.hill30.activemq.auth.RestAuthenticationPlugin">
         <property name="authServiceUrl">
-            <value>http://localhost:3000/auth/auth/</value>
+            <value>http://localhost:1141/api/auth</value>
         </property>
     </bean>
 </plugins>
 ```
+
+* NOTE 1: Visual Studio starts app at other port, change it appropriately
+* NOTE 2: for ruby service url should be
+
+```xml
+    <value>http://localhost:3000/auth/auth/</value>
+```
+
 
 * Edit url for service appropriate to your service
 

@@ -1,60 +1,78 @@
-== Install service for authentication
+Activemq custom authentication
+==============================
 
-=== If you want to use Rails test service
+## 1. Clone repository
+
+## 2. Install service for authentication
+
+### 2.1 If you want to use Rails test service
 
 Be sure, that you have installed rails environment
 
-# cd ruby-auth-service
-# bundle install
+* cd ruby-auth-service
+* bundle install
+
 (run only once, next time is not necessary)
-# rails server
+* rails server
 
 Check, that service works
-# open in browser http://localhost:3000/auth/auth?username=admin&password=admin
+* open in browser http://localhost:3000/auth/auth?username=admin&password=admin
+
 Should be {"notice":"Login OK"}
 
 There are only pairs admin/admin and userName/password are valid.
 
-=== If you want to use C# test service
+### 2.2 If you want to use C# test service
 
-Will be written later.
-
-
-== Install ActiveMQ
-
-# Download & unzip activemq 5.10.0
-# Create backup copy ${ACTIVEMQ_HOME}/conf/activemq.xml
+* open csharp-auth-service, run service with Visual Studio
+* open TestLoginForm.html in csharp-auth-service/AuthActiveMQService and send form, result should contains "Login OK"
 
 
-== Modify config
+## 3. Install ActiveMQ
 
-# Modify ${ACTIVEMQ_HOME}/conf/activemq.xml
+* Download & unzip activemq 5.10.0
+* Create backup copy of ${ACTIVEMQ_HOME}/conf/activemq.xml
+
+
+## 4. Modify config
+
+* Modify ${ACTIVEMQ_HOME}/conf/activemq.xml
 Add to tag broker tag plugins with content below
 
-    <plugins>
-        <bean id="authenticationPlugin" xmlns="http://www.springframework.org/schema/beans"
-                class="com.hill30.activemq.auth.RestAuthenticationPlugin">
-            <property name="authServiceUrl">
-                <value>http://localhost:3000/auth/auth/</value>
-            </property>
-        </bean>
-    </plugins>
 
-# Edit url for service
+```xml
+<plugins>
+    <bean id="authenticationPlugin" xmlns="http://www.springframework.org/schema/beans"
+            class="com.hill30.activemq.auth.RestAuthenticationPlugin">
+        <property name="authServiceUrl">
+            <value>http://localhost:1141/api/auth</value>
+        </property>
+    </bean>
+</plugins>
+```
+
+* NOTE 1: Visual Studio starts app at other port, change it appropriately
+* NOTE 2: for ruby service url should be
+
+```xml
+    <value>http://localhost:3000/auth/auth/</value>
+```
 
 
-== Compile & install authentication plugin
-
-# git clone ...
-# cd plugin
-# mvn install
-# cp target/activemq-rest-auth.jar ${ACTIVEMQ_HOME}/lib/
-${ACTIVEMQ_HOME}/bin/activemq start
+* Edit url for service appropriate to your service
 
 
-== Check sending messages
+## 5. Compile & install authentication plugin
 
-# tail -n 100 -f ${ACTIVEMQ_HOME}/data/activemq.log
+* cd plugin
+* mvn install
+* cp target/activemq-rest-auth.jar ${ACTIVEMQ_HOME}/lib/
+* ${ACTIVEMQ_HOME}/bin/activemq start
+
+
+## 6. Check sending messages
+
+* tail -n 100 -f ${ACTIVEMQ_HOME}/data/activemq.log
 Output should looks like
 
     2014-11-25 08:24:23,646 | INFO  | Connector ws started | org.apache.activemq.broker.TransportConnector | main
@@ -70,22 +88,24 @@ Output should looks like
 
 This command displays the contents of activemq.log and do not stop when end of file is reached, but rather to wait for additional data to be appended to the input.
 
-# Open http://localhost:8161/admin/topics.jsp
-# NOTE: Only for test environment! Select any topic and press link "Send To"
-# Press Send button
-# Check, that counter Messages Enqueued increased
+* Open http://localhost:8161/admin/topics.jsp
+* Select topic "ServiceTracker.Inbound.userName" (if not exists, connect Android application - it will create it) and press link "Send To"
+* Press Send button
+* Check, that counter Messages Enqueued increased
 
 
-== Check Android application connection
+## 7. Check Android application connection
 
-# Run Android app (if it was run before, clear data and run again)
-# Enter url of your ActiveMQ listener, e.g. tcp://192.168.0.100:1883
-# Open http://localhost:8161/admin/topics.jsp and send message to topic "ServiceTracker.Inbound.userName".
+* Run Android app (if it was run before, clear data and run again)
+* Enter url of your ActiveMQ listener, e.g. tcp://192.168.0.100:1883
+* Open http://localhost:8161/admin/topics.jsp and send message to topic "ServiceTracker.Inbound.userName".
 Message body shoud be valid JSON, e.g.
+
     {}
+    
 Check, that Android app shows the message
-# Press to that message, enter any data to any field and press Save
-# Check, that topic ServiceTracker.Outbound appeared in ActiveMQ admin console and it's counter Messages Enqueued increased
+* Press to that message, enter any data to any field and press Save
+* Check, that topic ServiceTracker.Outbound appeared in ActiveMQ admin console and it's counter Messages Enqueued increased
 
 
 
