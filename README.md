@@ -64,9 +64,13 @@ Add to tag broker tag plugins with content below
 
 ## 5. Compile & install authentication plugin
 
+To compile from source:
 * cd plugin
 * mvn install
 * cp target/activemq-rest-auth.jar ${ACTIVEMQ_HOME}/lib/
+
+OR just copy already compiled plugin from plugin/activemq-rest-auth.jar to ${ACTIVEMQ_HOME}/lib/
+
 * ${ACTIVEMQ_HOME}/bin/activemq start
 
 

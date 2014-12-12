@@ -9,25 +9,29 @@ namespace AuthActiveMQService.Controllers
 {
     public class AuthController : ApiController
     {
+        // You need to implement only this POST method to make service work with ActiveMQ plug-in
+        public HttpResponseMessage Post(Credentials creds)
+        {
+            return Authenticate(creds.Username, creds.Password);
+        }
+
+        // Helper that performs authentication
         private HttpResponseMessage Authenticate(string username, string password)
         {
-            // replace with real validation
-            var creds = new Dictionary<string, string>
+            // replace with real user validation
+            var usersRepo = new Dictionary<string, string>
             {
                 {"admin", "admin"},
                 {"userName", "password"},
             };
 
-            if (username != null && creds.ContainsKey(username) && creds[username] == password)
-            {
-                return this.Request.CreateResponse(HttpStatusCode.OK, "Login OK");
-            }
-            else
-            {
-                return this.Request.CreateResponse(HttpStatusCode.Forbidden, "Wrong pair login-password");
-            }
+            if (username != null && usersRepo.ContainsKey(username) && usersRepo[username] == password)
+                return Request.CreateResponse(HttpStatusCode.OK, "Login OK");
+
+            return Request.CreateResponse(HttpStatusCode.Forbidden, "Wrong pair login-password");
         }
 
+        // This method is only used for testing
         public HttpResponseMessage Get()
         {
             var nvps = this.Request.GetQueryNameValuePairs();
@@ -35,11 +39,6 @@ namespace AuthActiveMQService.Controllers
             var password = nvps.Where(x => x.Key == "password").Select(x => x.Value).FirstOrDefault();
 
             return Authenticate(username, password);    
-        }
-
-        public HttpResponseMessage Post(Credentials creds)
-        {
-            return Authenticate(creds.Username, creds.Password);
         }
 
         public class Credentials
