@@ -113,3 +113,6 @@ Check, that Android app shows the message
 
 
 
+P.S. How to send persistent message from NMS with QoS = EXACTLY_ONCE
+
+http://stackoverflow.com/questions/27189086/activemq-lost-persistent-message-sent-to-detached-consumer-before-keepaliveinter
