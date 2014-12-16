@@ -115,4 +115,27 @@ Check, that Android app shows the message
 
 P.S. How to send persistent message from NMS with QoS = EXACTLY_ONCE
 
-http://stackoverflow.com/questions/27189086/activemq-lost-persistent-message-sent-to-detached-consumer-before-keepaliveinter
+MQTT connector for ActiveMQ contains the code below
+
+    QoS qoS;
+    if (message.propertyExists(QOS_PROPERTY_NAME)) {
+        int ordinal = message.getIntProperty(QOS_PROPERTY_NAME);
+        qoS = QoS.values()[ordinal];
+
+    } else {
+        qoS = message.isPersistent() ? QoS.AT_MOST_ONCE : QoS.AT_LEAST_ONCE;
+    }
+
+To send persistent message from NMS with QoS = EXACTLY_ONCE is enough to set QoS for each message. If you use NMS:
+
+For ActiveMQ 5.10
+
+    msg.Properties.SetInt("ActiveMQ.MQTT.QoS", 2); // 2 - EXACTLY_ONCE
+    
+For ActiveMQ 5.9
+
+    msg.Properties.SetInt("QoSPropertyName", 2); // 2 - EXACTLY_ONCE
+    
+It's impossible to do it with ActiveMQ web console.
+
+More details here: http://stackoverflow.com/questions/27189086/activemq-lost-persistent-message-sent-to-detached-consumer-before-keepaliveinter
